@@ -1,0 +1,11 @@
+{
+    "files.associations": {
+        "colours.h": "c",
+        "processing.h": "c",
+        "parsing.h": "c",
+        "utils.h": "c",
+        "stdio.h": "c",
+        "string.h": "c",
+        "stdlib.h": "c"
+    }
+}
