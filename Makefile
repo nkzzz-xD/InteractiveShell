@@ -12,7 +12,7 @@ TARGET_PATH = $(BIN_DIR)/$(TARGET)
 all: $(TARGET_PATH)
 
 $(TARGET_PATH): $(BIN_DIR)/main.o $(BIN_DIR)/processing.o $(BIN_DIR)/parsing.o $(BIN_DIR)/utils.o | $(BIN_DIR)
-	$(COMPILER) $(LFLAGS) $^ -o $@
+	$(COMPILER) $(LFLAGS) $^ -lreadline -o $@
 # $< is first dependency and $0 is target name.
 
 $(BIN_DIR)/main.o: $(SRC_DIR)/main.c $(SRC_DIR)/colours.h $(SRC_DIR)/processing.h | $(BIN_DIR)

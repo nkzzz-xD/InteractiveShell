@@ -1,0 +1,3 @@
+- Comment thoroughly
+- Add tab completions for program binaries by seaching PATH.
+- Add input and output redirection (tokenise using <, >, | etc.) use dup2 function to help

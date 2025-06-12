@@ -30,7 +30,10 @@ ArrayList* create_array(int capacity) {
     array -> capacity = capacity;
     array -> size = 0;
     array -> data = calloc(capacity, sizeof(void*)); //make sure everything is zero
-    if (!array -> data) return NULL;
+    if (!array -> data) {
+        free(array);
+        return NULL;
+    }
     return array;
 }
 

@@ -4,27 +4,38 @@
 #include <string.h>
 #include <pwd.h>
 #include "colours.h"
+#include <readline/readline.h>
+#include <readline/history.h>
 #include "processing.h"
 #include "utils.h"
 
-void print_prompt();
+char* home;
+
+char* get_prompt();
 
 int main(void) {
-    char *line = NULL;
-    size_t len = 0;
-    while(1) {
-        print_prompt();
-        ssize_t num_chars = getline(&line, &len, stdin);
-        if (num_chars < 0) print_error_and_exit("Could not read line");
-        process_command(line);
-    }   
-    free(line);
+    using_history();
+    int running = 1;
+    while(running) {
+        char* prompt = get_prompt();
+        char *line = readline(prompt);
+        free(prompt);
+        if (!line) {
+            print_error_and_exit("Could not read line");
+        }
+        if (strlen(line) > 0) {
+            process_command(line, &running);
+            add_history(line);
+        }
+        free(line);
+    }
+    clear_history();
+    rl_free_line_state();  // Frees internal line buffer
     return 0;
 }
 
-
 //For now we will check the environment variables each time as they could change.
-void print_prompt() {
+char* get_prompt() {
     //Get current working directory for shell.
     char* cwd = getcwd(NULL, 0);
     if (!cwd) print_error_and_exit("Error retrieving working directory");
@@ -38,7 +49,7 @@ void print_prompt() {
     }
 
     //Get the user's home directory
-    char* home = getenv("HOME");
+    home = getenv("HOME");
     if (!home) {
         if (pw && pw -> pw_dir) home = pw -> pw_dir;
         else goto print;
@@ -57,6 +68,11 @@ void print_prompt() {
         cwd[0] = '~';
     }
     print:
-    printf("%s%s@InteractiveShell%s:%s%s%s$ ", VIOLET, username, RESET, BLUE, cwd, RESET);
+    const char* FORMAT_STRING = "%s%s@InteractiveShell%s:%s%s%s$ ";
+    int prompt_length = snprintf(NULL, 0, FORMAT_STRING, VIOLET, username, RESET, BLUE, cwd, RESET); // Get required length (excluding null)
+    char* prompt = malloc(prompt_length + 1);
+    if (!prompt) print_error_and_exit("Malloc failed for error message");
+    snprintf(prompt, prompt_length + 1, FORMAT_STRING, VIOLET, username, RESET, BLUE, cwd, RESET);
     free(cwd);
+    return prompt;
 }

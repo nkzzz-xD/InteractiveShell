@@ -16,5 +16,6 @@ typedef struct {
 ArrayList* create_array(int capacity);
 
 int add_element(ArrayList* array, void* element);
+int modify_element(ArrayList* array, int index, void* new_element);
 
 #endif

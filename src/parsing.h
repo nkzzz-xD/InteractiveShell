@@ -5,6 +5,10 @@
 
 #include "utils.h"
 
-ArrayList* tokenize(char* line, char* separators);
+extern char* home; //home directory of user.
+
+char* expand_path(const char* arg);
+ArrayList* tokenize(char* line, char* delimiters, ArrayList** modified_arguments);
+void free_tokens(ArrayList* tokens, ArrayList* modified_tokens);
 
 #endif
